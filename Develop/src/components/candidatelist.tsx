@@ -1,26 +1,21 @@
-
-import CandidateCard from './candidatecard';
+// src/components/CandidateList.tsx
+import React from 'react';
+import CandidateCard from './condidatecard';
 import { Candidate } from '../interfaces/Candidate.interface';
 
 interface CandidateListProps {
-  candidate: Candidate;       
-  onSave: (candidate: Candidate) => void;    // Function to handle save
-  onReject: () => void;  // Function to handle reject
+  candidates: Candidate[];
+  onSave: (candidate: Candidate) => void;
 }
 
-const CandidateList = ({ candidate, onSave, onReject }: CandidateListProps) => {
+const CandidateList: React.FC<CandidateListProps> = ({ candidates, onSave }) => {
   return (
     <div>
-        <CandidateCard 
-          key={candidate.username} 
-          candidate={candidate} 
-          onSave={() => onSave(candidate)} 
-          onReject={() => onReject()} 
-        />
-      
+      {candidates.map((candidate) => (
+        <CandidateCard key={candidate.username} candidate={candidate} onSave={() => onSave(candidate)} />
+      ))}
     </div>
   );
 };
 
 export default CandidateList;
-
