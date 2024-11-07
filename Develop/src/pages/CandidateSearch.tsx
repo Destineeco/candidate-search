@@ -1,63 +1,70 @@
-import { useState, useEffect, SetStateAction } from 'react';
-import { searchGithubUser } from '../api/API'; 
+import React, { useState, useEffect } from 'react';
+import CandidateList from '../components/candidatelist';
+import { searchGithubUser } from '../api/API';
 
-const CandidateSearch = () => {
-  const [username, setUsername] = useState(''); 
-  const [candidate, setCandidate] = useState(null);
-  const [error, setError] = useState('');
+interface Candidate {
+  name: string;
+  username: string;
+  avatar: string;
+  avatar_url: string;
+  location: string;
+  email: string;
+  company: string;
+  html_url: string;
+}
 
-  // Fetch candidate data when the component mounts or when username changes
+const CandidateSearch: React.FC = () => {
+  const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null); // Single candidate
+  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]); // Saved candidates list
+  const [currentIndex, setCurrentIndex] = useState<number>(0); // Index to simulate different candidates
+
+  // Fetch the next candidate from GitHub
   useEffect(() => {
-    const fetchCandidate = async () => {
+    const fetchNextCandidate = async () => {
+      const username = `user${currentIndex}`; 
       try {
-        const data = await searchGithubUser(username);
-        setCandidate(data);
-        setError(''); // Clear any previous error
-      } catch (err) {
-        setCandidate(null);
-        setError('Candidate not found.'); // Handle error if user is not found
+        const userData = await searchGithubUser(username);
+        setCurrentCandidate(userData); // Set the current candidate data
+      } catch (error) {
+        console.error('Error fetching candidate:', error);
       }
     };
 
-    fetchCandidate();
-  }, [username]);
+    fetchNextCandidate();
+  }, [currentIndex]);
 
-  // Function to handle user input for username
-  const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-    setUsername(event.target.value);
+  // Handle saving the current candidate
+  const handleSaveCandidate = (candidate: Candidate) => {
+    const updatedSavedCandidates = [...savedCandidates, candidate];
+    setSavedCandidates(updatedSavedCandidates);
+    localStorage.setItem('savedCandidates', JSON.stringify(updatedSavedCandidates));
+    setCurrentIndex((prev) => prev + 1); // Move to the next candidate
   };
 
-  // Function to handle search
-  const handleSearch = () => {
-    if (username) {
-      setUsername(username);
+  // Handle rejecting the current candidate
+  const handleRejectCandidate = () => {
+    setCurrentIndex((prev) => prev + 1); // Skip to the next candidate
+  };
+
+  // Load saved candidates from localStorage on page load
+  useEffect(() => {
+    const saved = localStorage.getItem('savedCandidates');
+    if (saved) {
+      setSavedCandidates(JSON.parse(saved));
     }
-  };
+  }, []);
 
   return (
     <div>
       <h1>Candidate Search</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={handleInputChange}
-        placeholder="Enter GitHub username"
-      />
-      <button onClick={handleSearch}>Search</button>
-
-      {error && <p>{error}</p>}
-
-      {candidate && (
-        <div>
-          <h2>{candidate.name || candidate.login}</h2>
-          <p>Location: {candidate.location || 'Not available'}</p>
-          <img src={candidate.avatar_url} alt={candidate.login} />
-          <p>Email: {candidate.email || 'Not available'}</p>
-          <p>Company: {candidate.company || 'Not available'}</p>
-          <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
-            View Profile
-          </a>
-        </div>
+      {currentCandidate ? (
+        <CandidateList
+          candidate={currentCandidate} 
+          onSave={handleSaveCandidate}  // Save handler
+          onReject={handleRejectCandidate}  // Reject handler
+        />
+      ) : (
+        <p>Loading candidate...</p>
       )}
     </div>
   );

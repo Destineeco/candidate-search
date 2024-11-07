@@ -1,15 +1,17 @@
-import { Outlet } from 'react-router-dom';
+
 import Nav from './components/Nav';
 
-function App() {
+
+import {Outlet} from 'react-router-dom'
+const App= () => {
   return (
-    <>
+    <div>
       <Nav />
       <main>
-        <Outlet />
+        <Outlet/>
       </main>
-    </>
+    </div>
   );
-}
+};
 
 export default App;
