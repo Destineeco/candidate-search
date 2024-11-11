@@ -48,7 +48,7 @@ const CandidateSearch: React.FC = () => {
 
   // Load saved candidates from localStorage on page load
   useEffect(() => {
-    const saved = localStorage.getItem('savedCandidates');
+    const saved = localStorage.getItem('savedCandidates') || '[]';
     if (saved) {
       setSavedCandidates(JSON.parse(saved));
     }
@@ -60,8 +60,8 @@ const CandidateSearch: React.FC = () => {
       {currentCandidate ? (
         <CandidateList
           candidate={currentCandidate} 
-          onSave={handleSaveCandidate}  // Save handler
-          onReject={handleRejectCandidate}  // Reject handler
+          onSave={handleSaveCandidate}  // Save
+          onReject={handleRejectCandidate}  // Reject
         />
       ) : (
         <p>Loading candidate...</p>

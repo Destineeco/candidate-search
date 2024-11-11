@@ -6,10 +6,11 @@ import { Candidate } from '../interfaces/Candidate.interface';
 interface CandidateCardProps {
   candidate: Candidate;
   onSave?: (candidate: Candidate) => void | undefined
-  onReject?: (candidate: Candidate) => void
+  onReject?: () => void
+  onRejectLocal?: (username: string) => void
 }
 
-const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onSave }) => {
+const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onSave, onReject, onRejectLocal }) => {
   return (
     <div>
       <h1>{candidate.name }</h1>
@@ -19,8 +20,10 @@ const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, onSave }) => {
       <p>Company: {candidate.company || "Not available"}</p>
       <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">Profile</a>
       <button onClick={() => onSave && onSave(candidate)}>+</button>
+      <button onClick={() =>  onReject && onReject() || onRejectLocal && onRejectLocal(candidate.username)}>-</button>
     </div>
   );
 };
 
 export default CandidateCard;
+``

@@ -5,7 +5,7 @@ import { Candidate } from '../interfaces/Candidate.interface';
 interface CandidateListProps {
   candidate: Candidate;       
   onSave: (candidate: Candidate) => void;    // Function to handle save
-  onReject: (candidate: Candidate) => void;  // Function to handle reject
+  onReject: () => void;  // Function to handle reject
 }
 
 const CandidateList = ({ candidate, onSave, onReject }: CandidateListProps) => {
@@ -15,7 +15,7 @@ const CandidateList = ({ candidate, onSave, onReject }: CandidateListProps) => {
           key={candidate.username} 
           candidate={candidate} 
           onSave={() => onSave(candidate)} 
-          onReject={() => onReject(candidate)} 
+          onReject={() => onReject()} 
         />
       
     </div>
