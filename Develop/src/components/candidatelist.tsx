@@ -1,6 +1,6 @@
 // src/components/CandidateList.tsx
 import React from 'react';
-import CandidateCard from './condidatecard';
+import CandidateCard from './candidatecard';
 import { Candidate } from '../interfaces/Candidate.interface';
 
 interface CandidateListProps {
