@@ -1,10 +1,12 @@
+// CandidateSearch.tsx (Where you search and save candidates)
+
 import { useState, useEffect, SetStateAction } from 'react';
-import {Candidate} from '../interfaces/Candidate.interface';
+import { Candidate } from '../interfaces/Candidate.interface';
 import { searchGithubUser } from '../api/API'; 
 
 const CandidateSearch = () => {
-  const [username, setUsername] = useState(''); 
-  const [candidate, setCandidate] = useState<Candidate | null>();
+  const [username, setUsername] = useState('');
+  const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [error, setError] = useState('');
 
   // Fetch candidate data when the component mounts or when username changes
@@ -20,7 +22,9 @@ const CandidateSearch = () => {
       }
     };
 
-    fetchCandidate();
+    if (username) {
+      fetchCandidate();
+    }
   }, [username]);
 
   // Function to handle user input for username
@@ -32,6 +36,18 @@ const CandidateSearch = () => {
   const handleSearch = () => {
     if (username) {
       setUsername(username);
+    }
+  };
+
+  // Function to save the current candidate to localStorage
+  const handleSaveCandidate = () => {
+    if (candidate) {
+      const savedCandidates = JSON.parse(localStorage.getItem('savedCandidates') || '[]');
+      // Check if the candidate is already saved
+      if (!savedCandidates.some((saved: Candidate) => saved.name === candidate.name)) {
+        savedCandidates.push(candidate);
+        localStorage.setItem('savedCandidates', JSON.stringify(savedCandidates));
+      }
     }
   };
 
@@ -58,6 +74,7 @@ const CandidateSearch = () => {
           <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
             View Profile
           </a>
+          <button onClick={handleSaveCandidate}>Save Candidate</button>
         </div>
       )}
     </div>

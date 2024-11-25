@@ -12,12 +12,14 @@ const savedCandidates: React.FC = () => {
       setCandidates(JSON.parse(saved));
     }
   }, []);
-  const onRemove = (username:string) =>{
-    const updatedCandidates = candidates.filter((candidate) => candidate.username !==username );
+  const onRemove = (username: string) => {
+    const updatedCandidates = candidates.filter((candidate) => candidate.username !== username);
     setCandidates(updatedCandidates);
-
-     localStorage.setItem('savedCandidates', JSON.stringify(updatedCandidates))
-  }
+    localStorage.setItem('savedCandidates', JSON.stringify(updatedCandidates));
+  };
+  
+  
+  
   return (
     <div>
       <h1>Potential Candidates</h1>
